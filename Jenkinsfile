@@ -2,6 +2,12 @@ pipeline {
     agent any
     tools {
         maven 'maven'
+        'org.jenkinsci.plugins.docker.commons.tools.DockerTool' 'docker'
+    }
+
+    environment {
+        dockerHome = tool 'docker'
+        PATH = "${dockerHome}/bin:$PATH"
     }
     stages {
         stage('Build') { 
@@ -9,19 +15,15 @@ pipeline {
                 sh 'mvn -B -DskipTests clean package' 
             }
         }
-        stage('Test') {
-            steps {
-                sh 'mvn test'
+        stage ('Build and Push') {
+            steps{
+            withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+
+                sh "docker build . -t security:${env.BUILD_NUMBER}"
+                sh "docker login -u $USERNAME -p $PASSWORD"
+                sh "docker tag security:${env.BUILD_NUMBER} chanduv33/security-service:${env.BUILD_NUMBER}"
+                sh "docker push chanduv33/security-service:${env.BUILD_NUMBER}"
             }
-        }
-        stage('Package') {
-            steps {
-                sh 'mvn package'
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml' 
-                }
             }
         }
     }
