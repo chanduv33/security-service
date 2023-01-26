@@ -1,0 +1,7 @@
+package com.storesmanagementsystem.springsecuritymicro.security;
+
+import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
+
+public class WebSecurityApplicationInitializer extends AbstractSecurityWebApplicationInitializer {
+
+}
