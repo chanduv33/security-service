@@ -1,4 +1,4 @@
-package com.capgemini.springsecuritymicro;
+package com.storesmanagementsystem.springsecuritymicro;
 
 import org.springframework.boot.test.context.SpringBootTest;
 
